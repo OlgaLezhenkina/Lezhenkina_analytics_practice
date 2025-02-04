@@ -1,0 +1,60 @@
+[plantuml, png]
+....
+@startuml component_model
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LANDSCAPE()
+
+' Optional: Adjust skinparams
+skinparam rectangle {
+  BorderColor  #000000
+}
+
+title
+ <b>SaleProductsArch v2025.02.03</b>
+ <i>Система реализации товаров</i>
+end title
+
+System_Boundary(system, "Система управления товарами") {
+
+  Container(apigw, "APIGateway", "", "Точка входа для всех запросов")
+
+  Container(prod_cat, "Каталог Продукции", "", "Предоставляет и управляет информацией о продуктах: описание, характеристики, изображения.")
+  Container(st_war, "Запасы и Склад", "", "Отслеживает наличие товаров на складах, управляет запасами, уведомляет о низком остатке.")
+  Container(pr_pr, "Цены и Акции", "", "Управляет ценами на товары, применяет скидки и акции, рассчитывает стоимость заказа.")
+  Container(ord, "Заказы", "", "Принимает, обрабатывает и отслеживает заказы, управляет статусами заказов.")
+  Container(usr, "Пользователи", "", "Управляет учетными записями пользователей, аутентифицирует и авторизует пользователей.")
+  Container(del, "Доставка", "", "Организует доставку заказов, выбирает службу доставки, отслеживает статус доставки.")
+  Container(pay, "Платежи", "", "Обрабатывает платежи, интегрируется с платежными системами, обеспечивает безопасность платежей.")
+  Container(backoffice, "Управление Бэкофисом", "", "Предоставляет интерфейс для управления платформой: продуктами, заказами, пользователями, ценами, акциями и т.д.")
+
+  ContainerQueue(kafka, "Kafka", "", "Обрабатывает асинхронную коммуникацию")
+
+  ' Connections (примеры, нужно настроить под вашу архитектуру)
+  Rel(apigw, prod_cat, "REST API")
+  Rel(apigw, st_war, "REST API")
+  Rel(apigw, pr_pr, "REST API")
+  Rel(apigw, ord, "REST API")
+  Rel(apigw, usr, "REST API")
+  Rel(apigw, del, "REST API")
+  Rel(apigw, pay, "REST API")
+  Rel(apigw, backoffice, "REST API (администрирование)")
+
+  Rel(backoffice, prod_cat, "REST API (управление продуктами)")
+  Rel(backoffice, st_war, "REST API (управление запасами)")
+  Rel(backoffice, pr_pr, "REST API (управление ценами и акциями)")
+  Rel(backoffice, ord, "REST API (управление заказами)")
+  Rel(backoffice, usr, "REST API (управление пользователями)")
+  Rel(backoffice, del, "REST API (управление доставкой)")
+  Rel(backoffice, pay, "REST API (управление платежами)")
+
+  Rel_D(ord, kafka, "Заказ создан", "Kafka")
+  Rel_D(kafka, st_war, "Заказ создан", "Kafka")
+  Rel_D(kafka, pay, "Заказ создан", "Kafka")
+  Rel_D(kafka, del, "Заказ создан", "Kafka")
+
+  Rel_L(usr, ord, "Чтение/Запись данных пользователя", "REST API")
+
+}
+
+@enduml
+....

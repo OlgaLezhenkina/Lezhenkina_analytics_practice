@@ -1,0 +1,37 @@
+[plantuml, png]
+....
+@startuml context_model
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' Actors
+rectangle usr #aliceblue [
+Покупатель
+]
+rectangle str #aliceblue [
+Сотрудник
+]
+
+' System
+rectangle bms #lightblue [
+Система Управления Товарами
+]
+
+' External systems
+rectangle ps #lightgrey [
+Платежные Системы
+]
+rectangle dps #lightgrey [
+Службы Доставки
+]
+rectangle supp #lightgrey [
+Системы Поставщиков
+]
+
+' Connections
+usr --> bms : Покупает товары в офлайн или онлайн-магазине
+str --> bms : Управляет товарами, заказами и доставкой
+bms --> ps : Обработка платежей
+bms --> dps : Запрос статуса доставки, создание доставки
+bms --> supp : Запрос данных о наличии, создание заказов
+
+@enduml
+....
