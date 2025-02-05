@@ -45,8 +45,9 @@
 image::context_model.svg[Context Model, width=1000, align=center]
 
 Верхнеуровневое разбиение. С4.level2.
+Каждый домен содержит в себе набор  ммиктосервисов, обоснованных бизнес-функцией данной абстракции, а так же иные компоненты, например, такие как БД - реляционная или нереляционныя.
 
-image::component_model.svg[Component Model, width=1000, align=center]
+image::component_model_v4_1.svg[Containers Model, width=1000, align=center]
 
 
 // относительный путь к изображению не работает -- почему??

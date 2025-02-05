@@ -4,32 +4,105 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 LAYOUT_LANDSCAPE()
 
-' Optional: Adjust skinparams
+
 skinparam rectangle {
   BorderColor  #000000
 }
 
 title
- <b>SaleProductsArch v2025.02.03</b>
- <i>Система реализации товаров</i>
+<b>SaleProductsArch v2025.02.03</b>
+<i>Система реализации товаров</i>
 end title
 
 System_Boundary(system, "Система управления товарами") {
 
-  Container(apigw, "APIGateway", "", "Точка входа для всех запросов")
 
-  Container(prod_cat, "Каталог Продукции", "", "Предоставляет и управляет информацией о продуктах: описание, характеристики, изображения.")
-  Container(st_war, "Запасы и Склад", "", "Отслеживает наличие товаров на складах, управляет запасами, уведомляет о низком остатке.")
-  Container(pr_pr, "Цены и Акции", "", "Управляет ценами на товары, применяет скидки и акции, рассчитывает стоимость заказа.")
-  Container(ord, "Заказы", "", "Принимает, обрабатывает и отслеживает заказы, управляет статусами заказов.")
-  Container(usr, "Пользователи", "", "Управляет учетными записями пользователей, аутентифицирует и авторизует пользователей.")
-  Container(del, "Доставка", "", "Организует доставку заказов, выбирает службу доставки, отслеживает статус доставки.")
-  Container(pay, "Платежи", "", "Обрабатывает платежи, интегрируется с платежными системами, обеспечивает безопасность платежей.")
-  Container(backoffice, "Управление Бэкофисом", "", "Предоставляет интерфейс для управления платформой: продуктами, заказами, пользователями, ценами, акциями и т.д.")
+  Container(apigw, "APIGateway", "APIM", "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", "Точка входа для всех запросов") #DarkTurquoise
+  Container(apigw_out, "API", "APIM", "Точка входа для запросов сторонних систем") #DarkTurquoise
 
-  ContainerQueue(kafka, "Kafka", "", "Обрабатывает асинхронную коммуникацию")
+  System_Boundary(prod_cat_system, "Каталог Продукции") {
 
-  ' Connections (примеры, нужно настроить под вашу архитектуру)
+    Container(prod_cat, "Каталог Продукции", "", "Предоставляет и управляет информацией о продуктах: описание, характеристики, изображения.")
+    ContainerDb(prod_cat_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+    ContainerDb(cache, "Кэш", "Redis", "Кэширует часто используемые данные") #lightskyblue
+
+    Rel(prod_cat, prod_cat_db, "Читает и записывает данные напрямую", "JDBC")
+  }
+
+  System_Boundary(st_war_system, "Запасы и Склад") {
+
+    Container(st_war, "Запасы и Склад", "", "Отслеживает наличие товаров на складах, управляет запасами, уведомляет о низком остатке.")
+    ContainerDb(st_war_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(st_war, st_war_db, "Читает и записывает данные", "JDBC")
+  }
+  
+  System_Boundary(pr_pr_system, "Цены и Акции") {
+
+    Container(pr_pr, "Цены и Акции", "", "Управляет ценами на товары, применяет скидки и акции, рассчитывает стоимость заказа.")
+    ContainerDb(pr_pr_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(pr_pr, pr_pr_db, "Читает и записывает данные", "JDBC")
+  }
+  
+  System_Boundary(ord_system, "Заказы") {
+
+    Container(ord, "Заказы", "", "Принимает, обрабатывает и отслеживает заказы, управляет статусами заказов.")
+    ContainerDb(ord_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(ord, ord_db, "Читает и записывает данные", "JDBC")
+  }
+  
+  System_Boundary(usr_system, "Пользователи") {
+
+    Container(usr, "Пользователи", "", "Управляет учетными записями пользователей, аутентифицирует и авторизует пользователей.")
+    ContainerDb(usr_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(usr, usr_db, "Читает и записывает данные", "JDBC")
+  }
+
+  System_Boundary(del_system, "Доставка") {
+
+    Container(del, "Доставка", "", "Организует доставку заказов, выбирает службу доставки, отслеживает статус доставки.")
+    ContainerDb(del_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(del, del_db, "Читает и записывает данные", "JDBC")
+  }
+  
+  System_Boundary(pay_system, "Платежи") {
+
+    Container(pay, "Платежи", "", "Обрабатывает платежи, интегрируется с платежными системами, обеспечивает безопасность платежей.")
+    ContainerDb(pay_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(pay, pay_db, "Читает и записывает данные", "JDBC")
+  }
+  
+  System_Boundary(backoffice_system, "Управление Бэкофисом") {
+
+    Container(backoffice, "Управление Бэкофисом", "", "Предоставляет интерфейс для управления платформой: продуктами, заказами, пользователями, ценами, акциями и т.д.")
+    ContainerDb(backoffice_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(backoffice, backoffice_db, "Читает и записывает данные", "JDBC")
+  }
+  
+  System_Boundary(notif_system, "Нотификация") {
+    Container(notif, "Нотификация клиентов", "микросервис", "Уведомление пользователей о статусе заказа/доставки")
+    ContainerDb(notif_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(notif, notif_db, "Читает и записывает данные", "JDBC")
+  }
+  System_Boundary(auth_system, "") {
+
+    Container(auth, "Авторизация", "микросервис", "Отвечает за авторизацию и аунтификацию")
+    ContainerDb(auth_db, "База данных", "PostgreSQL", "Хранит данные приложения") #deepSkyBlue
+
+    Rel(auth, auth_db, "Читает и записывает данные", "JDBC")
+  }
+
+
+  ContainerQueue(kafka, "Kafka", "", "Обрабатывает асинхронную коммуникацию") #MediumSlateBlue
+
+  
   Rel(apigw, prod_cat, "REST API")
   Rel(apigw, st_war, "REST API")
   Rel(apigw, pr_pr, "REST API")
@@ -37,6 +110,7 @@ System_Boundary(system, "Система управления товарами") 
   Rel(apigw, usr, "REST API")
   Rel(apigw, del, "REST API")
   Rel(apigw, pay, "REST API")
+  Rel(apigw, auth, "REST API")
   Rel(apigw, backoffice, "REST API (администрирование)")
 
   Rel(backoffice, prod_cat, "REST API (управление продуктами)")
@@ -50,11 +124,25 @@ System_Boundary(system, "Система управления товарами") 
   Rel_D(ord, kafka, "Заказ создан", "Kafka")
   Rel_D(kafka, st_war, "Заказ создан", "Kafka")
   Rel_D(kafka, pay, "Заказ создан", "Kafka")
+  Rel_D(kafka, notif, "Заказ создан", "Kafka")
   Rel_D(kafka, del, "Заказ создан", "Kafka")
 
-  Rel_L(usr, ord, "Чтение/Запись данных пользователя", "REST API")
+  Rel_D(notif, usr, "Статус заказа", "Kafka")
+  Rel(usr, ord, "Чтение данных пользователя", "REST API")
+
+  Rel_D(cache, prod_cat_db, "Прогрев кэша", "Kafka")
+  Rel(prod_cat, cache, "Вычитывает закэшированные данные")
 
 }
+Container(pay_out, "Платежный шлюз", "") #CadetBlue
+Container(st_war_out, "Поставщики", "") #Olive
+Container(del_out, "Сервисы доставки", "") #BurlyWood
+
+Rel(apigw_out, pay_out, "REST API")
+Rel(apigw_out, st_war_out, "REST API")
+Rel(apigw_out, del_out, "REST API")
+Rel(apigw_out, apigw, "REST API")
+
 
 @enduml
 ....
