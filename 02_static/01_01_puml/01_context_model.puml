@@ -2,7 +2,7 @@
 ....
 @startuml context_model
 !include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-' Actors
+
 rectangle usr #aliceblue [
 Покупатель
 ]
@@ -10,12 +10,12 @@ rectangle str #aliceblue [
 Сотрудник
 ]
 
-' System
+
 rectangle bms #lightblue [
 Система Управления Товарами
 ]
 
-' External systems
+
 rectangle ps #lightgrey [
 Платежные Системы
 ]
@@ -26,7 +26,7 @@ rectangle supp #lightgrey [
 Системы Поставщиков
 ]
 
-' Connections
+
 usr --> bms : Покупает товары в офлайн или онлайн-магазине
 str --> bms : Управляет товарами, заказами и доставкой
 bms --> ps : Обработка платежей

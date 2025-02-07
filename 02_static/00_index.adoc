@@ -1,0 +1,10 @@
+---
+title: "Схемы"
+description: "Данный раздел содержит код диаграмм, использующихся в документации, а также иные вложения."
+draft: true
+weight: 1
+additional:
+  team: "Team_Analytics"
+  author: "Леженкина Ольга Николаевна"
+  status: "in_work"
+---

@@ -1,0 +1,166 @@
+@startuml db_model
+
+' Каталог Продукции
+package Product_Catalog <<Frame>> {
+    entity "products" {
+      * product_id : UUID
+      --
+      name : VARCHAR(255)
+      description : TEXT
+      price_id : UUID
+      category_id : UUID
+    }
+
+    entity "categories" {
+      * category_id : UUID
+      --
+      name : VARCHAR(255)
+      parent_category_id : UUID
+      description : TEXT
+    }
+}
+
+' Цены и Акции
+package Prices_&_Promotions <<Frame>> {
+  class prices {
+    * price_id : UUID
+    --
+    value : DECIMAL(10,2)
+    version : int
+    start_date : DATETIME
+    create_datee : DATETIME
+  }
+  class promotions {
+  * promotion_id : UUID
+  --
+  procent : INT
+  customer_category_id : UUID
+  category_id : UUID
+  start_date : DATETIME
+  end_datee : DATETIME
+  }
+}
+
+' Запасы и Склад
+package Stocks_&_Warehouse <<Frame>> {
+    entity "storage" {
+      * storage_id : UUID
+      --
+      name : VARCHAR(255)
+      location : VARCHAR(255)
+    }
+    entity "inventories" {
+      * inventory_id : UUID
+      --
+      product_id : UUID
+      storage_id : UUID
+      quantity : INT
+      is_arhive : BOOLEAN
+    }
+}
+
+' Пользователи
+package users <<Frame>> {
+    entity "customers" {
+      * customer_id : UUID
+      --
+      first_name : VARCHAR(255)
+      last_name : VARCHAR(255)
+      email : VARCHAR(255)
+      password : VARCHAR(255)
+      address_id : UUID
+      customer_category_id : UUID
+    }
+
+    entity "addresses" {
+      * address_id : INT
+      --
+      street : VARCHAR(255)
+      city : VARCHAR(255)
+      state : VARCHAR(255)
+'      zip_code : VARCHAR(20)
+      country : VARCHAR(255)
+    }
+
+    entity "customer_categories" {
+      * customer_category_id : UUID
+      --
+      name : VARCHAR(255)
+      parent_category_id : UUID
+      description : TEXT
+
+    }
+}
+
+' Заказы
+package Orders <<Frame>> {
+    entity "orders" {
+      * order_id : UUID
+      --
+      customer_id : UUID
+      order_date : DATETIME
+      total_amount : DECIMAL(10,2)
+      status : ENAM
+    }
+
+    entity "order_items" {
+      * order_item_id : UUID
+      --
+      order_id : UUID
+      product_id : UUID
+      quantity : INT
+      price_id : UUID
+      promotion_id : UUID
+    }
+}
+' Платежи
+package Payments <<Frame>> {
+    entity "payments" {
+      * payment_id : UUID
+      --
+      order_id : UUID
+      payment_date : DATETIME
+      amount : DECIMAL(10,2)
+      payment_method : VARCHAR(50)
+      payment_status : VARCHAR(50)
+    }
+}
+
+package Deliveries <<Frame>> {
+    entity "deliveries" {
+      * delivery_id : UUID
+      --
+      order_id : UUID
+      delivery_date : DATETIME
+      delivery_address : VARCHAR(255)
+      delivery_status : VARCHAR(50)
+      shipping_service : VARCHAR(255)
+    }
+    entity "routes" {
+      * route_id : UUID
+      --
+      delivery_id : UUID
+      route_map : VARCHAR(255)
+      route_status : VARCHAR(50)
+      route_service : VARCHAR(255)
+      user_id : UUID
+      vehicle_id : UUID
+    }
+}
+
+products }--|| categories
+inventories }--|| products
+inventories }--|| storage
+orders }--|| customers
+order_items }--|| orders
+order_items }--|| products
+customers }--|| addresses
+customer_categories }--|| customers
+payments }--|| orders
+deliveries }--|| orders
+deliveries }--|| routes
+prices }--|| products
+promotions }--|| order_items
+
+@enduml
+
